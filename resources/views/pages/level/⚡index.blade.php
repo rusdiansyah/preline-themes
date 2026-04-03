@@ -107,7 +107,7 @@ new class extends Component {
 
             <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
                 @foreach ($this->data as $item)
-                    <tr>
+                    <tr class="odd:bg-layer even:bg-surface hover:bg-muted-hover dark:odd:bg-neutral-800 dark:even:bg-neutral-700 dark:hover:bg-neutral-600">
                         <td class="size-px whitespace-nowrap">
                             <div class="ps-6 py-3">
                                 <label for="hs-at-with-checkboxes-1" class="flex">
