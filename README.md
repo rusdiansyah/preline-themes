@@ -10,6 +10,8 @@
 git clone git@github.com:rusdiansyah/preline-themes.git nama_aplikasi
 cd nama_aplikasi
 composer update
+npm install
+npm run dev
 ```
 
 2. buat file .env
