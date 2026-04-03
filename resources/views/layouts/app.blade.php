@@ -15,7 +15,7 @@
 <body class="bg-gray-50 dark:bg-neutral-900">
     <livewire:layouts.header />
     <livewire:layouts.breadcrumb />
-    <livewire:layouts.sidebar />
+    <livewire:layouts.menus />
 
     <div class="w-full lg:ps-64">
         <div class="p-4 sm:p-6 space-y-4 sm:space-y-6">

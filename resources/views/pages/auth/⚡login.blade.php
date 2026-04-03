@@ -30,7 +30,7 @@ new class extends Component {
             if (Auth::user()->level->name == 'Admin') {
                 return $this->redirectRoute('dashboard');
             } elseif (Auth::user()->level->name == 'User') {
-                return $this->redirectRoute('user.dashboard');
+                return $this->redirectRoute('users.dashboard');
             } else {
                 Auth::logout();
                 return $this->redirectRoute('home');
