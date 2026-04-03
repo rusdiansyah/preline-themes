@@ -5,7 +5,6 @@
 ### Cara Install
 
 1. clone Aplikasi:
-
 ```bash
 git clone git@github.com:rusdiansyah/preline-themes.git nama_aplikasi
 cd nama_aplikasi
@@ -18,8 +17,15 @@ npm run dev
 ```bash
 cp .env.example .env
 ```
+
 3. edit file .env terutama pada koneksi database
+
 4. migrate table
 ```bash
 php artisan migrate
+```
+
+5. buat link storege
+```bash
+php artisan storage:link
 ```
