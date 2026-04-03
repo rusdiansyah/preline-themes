@@ -1,0 +1,307 @@
+<?php
+
+use Livewire\Component;
+use App\Models\LevelUser;
+use App\Models\User;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\Url;
+use Livewire\Attributes\On;
+
+new class extends Component {
+    #[Url(as: 'q')]
+    public $search = '';
+    public $perPage = 10;
+    #[Url]
+    public $sort = 'name';
+
+    public $title = 'Users';
+    public $id, $name, $email, $level_user_id, $password, $password_confirmation;
+    public $isStatus;
+
+    public $filter_level_user_id;
+
+    #[Computed]
+    public function listLevel()
+    {
+        return LevelUser::all();
+    }
+
+    #[Computed]
+    public function data()
+    {
+        return User::query()->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))
+        ->when($this->filter_level_user_id, fn($q) => $q->where('level_users_id', $this->filter_level_user_id))
+        ->orderBy($this->sort)
+        ->paginate($this->perPage);
+    }
+
+    public function render()
+    {
+        return $this->view()->layout('layouts::app');
+    }
+
+    public function viewAll()
+    {
+        $this->perPage=null;
+    }
+
+    public function filter()
+    {
+        $this->data;
+    }
+
+    public function add()
+    {
+        $this->reset();
+        $this->isStatus = false;
+    }
+
+    public function edit($id)
+    {
+        $item = User::findOrFail($id);
+        // dd($item->level_users_id);
+        $this->isStatus = true;
+        $this->id = $item->id;
+        $this->name = $item->name;
+        $this->email = $item->email;
+        $this->level_user_id = $item->level_users_id;
+    }
+
+    public function store()
+    {
+        // dd($this->all());
+        if ($this->isStatus == false) {
+            $this->validate([
+                'name' => 'required|min:3',
+                'email' => 'required|email|unique:users,email,' . $this->id,
+                'password' => 'required|confirmed|min:6',
+                'password_confirmation' => 'required|min:6',
+                'level_user_id' => 'required',
+            ]);
+            User::create([
+                'name' => $this->name,
+                'email' => $this->email,
+                'password' => bcrypt($this->password),
+                'level_users_id' => $this->level_user_id,
+            ]);
+            $this->dispatch('swal', [
+                'title' => 'Success!',
+                'text' => 'Data berhasil disimpan',
+                'icon' => 'success',
+            ]);
+        } else {
+            // dd($this->all());
+            if ($this->password) {
+                $this->validate([
+                    'name' => 'required|min:3',
+                    'email' => 'required|email',
+                    'password' => 'required|confirmed|min:6',
+                    'password_confirmation' => 'required',
+                    'level_user_id' => 'required',
+                ]);
+                User::where('id', $this->id)->update([
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'level_users_id' => $this->level_user_id,
+                    'password' => Hash::make($this->password),
+                ]);
+                $this->dispatch('swal', [
+                    'title' => 'Success!',
+                    'text' => 'Data berhasil diedit',
+                    'icon' => 'success',
+                ]);
+            } else {
+                $this->validate([
+                    'name' => 'required|min:3',
+                    'email' => 'required|email',
+                    'level_user_id' => 'required',
+                ]);
+                User::where('id', $this->id)->update([
+                    'name' => $this->name,
+                    'email' => $this->email,
+                    'level_users_id' => $this->level_user_id,
+                ]);
+                $this->dispatch('swal', [
+                    'title' => 'Success!',
+                    'text' => 'Data berhasil diedit',
+                    'icon' => 'success',
+                ]);
+            }
+        }
+    }
+
+    public function cofirmDelete($id)
+    {
+        $this->dispatch('confirm', id: $id);
+    }
+
+    #[On('delete')]
+    public function delete($id)
+    {
+        $item = User::findOrFail($id);
+        $item->delete();
+
+        $this->dispatch('swal', [
+            'title' => 'Deleted!',
+            'text' => 'Data berhasil dihapus',
+            'icon' => 'success',
+        ]);
+    }
+};
+?>
+
+<div>
+    <x-table.create title="User">
+        <table class="min-w-full table-auto divide-y divide-gray-200 dark:divide-neutral-700">
+            <thead class="bg-gray-50 dark:bg-neutral-800">
+                <tr>
+                    <th scope="col" class="ps-6 py-3 text-start">
+                        <label for="hs-at-with-checkboxes-main" class="flex">
+                            <input type="checkbox"
+                                class="shrink-0 border-gray-300 rounded-sm text-blue-600 focus:ring-blue-500 checked:border-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
+                                id="hs-at-with-checkboxes-main">
+                            <span class="sr-only">Checkbox</span>
+                        </label>
+                    </th>
+
+                    <th scope="col" class="px-6 py-3 text-start">
+                        <div class="flex items-center gap-x-2">
+                            <span class="text-xs font-semibold uppercase text-gray-800 dark:text-neutral-200">
+                                Name
+                            </span>
+                        </div>
+                    </th>
+
+                    <th scope="col" class="px-6 py-3 text-start">
+                        <div class="flex items-center gap-x-2">
+                            <span class="text-xs font-semibold uppercase text-gray-800 dark:text-neutral-200">
+                                Email
+                            </span>
+                        </div>
+                    </th>
+
+                    <th scope="col" class="px-6 py-3 text-start">
+                        <div class="flex items-center gap-x-2">
+                            <span class="text-xs font-semibold uppercase text-gray-800 dark:text-neutral-200">
+                                Level
+                            </span>
+                        </div>
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-end"></th>
+                </tr>
+            </thead>
+
+            <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
+                @foreach ($this->data as $item)
+                    <tr>
+                        <td class="size-px whitespace-nowrap">
+                            <div class="ps-6 py-3">
+                                <label for="hs-at-with-checkboxes-1" class="flex">
+                                    <input type="checkbox"
+                                        class="shrink-0 border-gray-300 rounded-sm text-blue-600 focus:ring-blue-500 checked:border-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
+                                        id="hs-at-with-checkboxes-1">
+                                    <span class="sr-only">Checkbox</span>
+                                </label>
+                            </div>
+                        </td>
+
+                        <td class="size-px whitespace-nowrap">
+                            <div class="px-6 py-3">
+                                <span
+                                    class="block text-sm font-semibold dark:text-white">{{ $item->name }}</span>
+                            </div>
+                        </td>
+                        <td class="size-px whitespace-nowrap">
+                            <div class="px-6 py-3">
+                                <span
+                                    class="block text-sm font-semibold dark:text-white">{{ $item->email }}</span>
+                            </div>
+                        </td>
+                        <td class="size-px whitespace-nowrap">
+                            <div class="px-6 py-3">
+                                <span
+                                    class="block text-sm font-semibold dark:text-white">{{ @$item->level->name }}</span>
+                            </div>
+                        </td>
+
+                        <td class="size-px whitespace-nowrap">
+                            <div class="inline-flex rounded-lg shadow-2xs">
+                                <x-button.edit id="{{ $item->id }}" />
+                                <x-button.hapus id="{{ $item->id }}" />
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+        <!-- Footer -->
+        <div
+            class="px-6 py-4 grid gap-3 md:flex md:justify-between md:items-center border-t border-gray-200 dark:border-neutral-700">
+            <div>
+                <p class="text-sm text-gray-600 dark:text-neutral-400">
+                    <span class="font-semibold text-gray-800 dark:text-neutral-200">{{ $this->data->count() }}</span>
+                    results
+                </p>
+            </div>
+
+            <div>
+                <div class="inline-flex gap-x-2">
+                    {{ $this->data->links() }}
+                </div>
+            </div>
+        </div>
+        <!-- End Footer -->
+    </x-table.create>
+
+    <livewire:canvas title="Create {{ $title }}" id="hs-create">
+        <form wire:submit.prevent="store">
+            <x-form.input nama="name" type="text" label="Name" />
+            <x-form.input nama="email" type="email" label="Email" />
+            <x-form.input nama="password" type="password" label="Password" />
+            <x-form.input nama="password_confirmation" type="password" label="Confirm Password" />
+            <x-form.select nama="level_user_id" label="Level">
+                <option value="">Select Level</option>
+                @foreach ($this->listLevel() as $level)
+                    <option value="{{ $level->id }}">{{ $level->name }}</option>
+                @endforeach
+            </x-form.select>
+
+            <livewire:form.button-save type="submit" />
+        </form>
+    </livewire:canvas>
+
+    <x-canvas-no-bacdrop title="Filter {{ $title }}" id="hs-filter">
+        <form wire:submit.prevent="filter">
+            <x-form.select nama="filter_level_user_id" label="Level">
+                <option value="">Select All</option>
+                @foreach ($this->listLevel() as $level)
+                    <option value="{{ $level->id }}">{{ $level->name }}</option>
+                @endforeach
+            </x-form.select>
+            <x-button.filter type="submit" />
+        </form>
+    </x-canvas-no-bacdrop>
+
+
+</div>
+@script
+    <script>
+        $wire.on("confirm", (event) => {
+            Swal.fire({
+                title: "Yakin dihapus?",
+                text: "Anda tidak dapat mengembalikannya!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $wire.dispatch("delete", {
+                        id: event.id
+                    });
+                }
+            });
+        });
+    </script>
+@endscript
