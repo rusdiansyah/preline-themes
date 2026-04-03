@@ -7,9 +7,17 @@
 1. clone Aplikasi:
 ```bash
 git clone git@github.com:rusdiansyah/preline-themes.git nama_aplikasi
+```
+```bash
 cd nama_aplikasi
+```
+```bash
 composer update
+```
+```bash
 npm install
+```
+```bash
 npm run dev
 ```
 
