@@ -9,6 +9,7 @@
 ```bash
 git clone git@github.com:rusdiansyah/preline-themes.git nama_aplikasi
 cd nama_aplikasi
+composer update
 ```
 
 2. buat file .env
