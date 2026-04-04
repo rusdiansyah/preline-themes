@@ -4,7 +4,7 @@
     role="dialog" tabindex="-1" aria-labelledby="hs-filter-no-backdrop-label">
     <div class="flex justify-between items-center py-3 px-4 border-b border-overlay-header">
         <h3 id="hs-filter-no-backdrop-label" class="font-semibold text-foreground">
-            Filter {{ $title }}
+            Filter
         </h3>
         <button type="button"
             class="size-8 inline-flex justify-center items-center gap-x-2 rounded-full bg-surface border border-surface-line text-surface-foreground hover:bg-surface-hover focus:outline-hidden focus:bg-surface-focus disabled:opacity-50 disabled:pointer-events-none"

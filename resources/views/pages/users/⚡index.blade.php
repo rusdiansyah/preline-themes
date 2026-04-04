@@ -6,8 +6,11 @@ use App\Models\User;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\On;
+use Livewire\WithPagination;
 
 new class extends Component {
+    use WithPagination;
+
     #[Url(as: 'q')]
     public $search = '';
     public $perPage = 10;
@@ -35,6 +38,11 @@ new class extends Component {
         ->paginate($this->perPage);
     }
 
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
         return $this->view()->layout('layouts::app');
@@ -42,7 +50,8 @@ new class extends Component {
 
     public function viewAll()
     {
-        $this->perPage=null;
+        $this->reset(['search', 'filter_level_user_id']);
+        $this->perPage=100;
     }
 
     public function filter()
@@ -50,27 +59,33 @@ new class extends Component {
         $this->data;
     }
 
+    public function resetFilter()
+    {
+        $this->reset(['filter_level_user_id']);
+    }
+
     public function add()
     {
-        $this->reset();
-        $this->isStatus = false;
+        $this->reset(['id', 'name', 'email', 'level_user_id', 'password', 'password_confirmation']);
+        $this->isStatus = true;
+        $this->title = 'Tambah User';
     }
 
     public function edit($id)
     {
         $item = User::findOrFail($id);
-        // dd($item->level_users_id);
-        $this->isStatus = true;
+        $this->isStatus = false;
         $this->id = $item->id;
         $this->name = $item->name;
         $this->email = $item->email;
         $this->level_user_id = $item->level_users_id;
+        $this->title = 'Edit User';
     }
 
     public function store()
     {
         // dd($this->all());
-        if ($this->isStatus == false) {
+        if ($this->isStatus == true) {
             $this->validate([
                 'name' => 'required|min:3',
                 'email' => 'required|email|unique:users,email,' . $this->id,
@@ -220,7 +235,7 @@ new class extends Component {
                         <td class="size-px whitespace-nowrap">
                             <div class="px-6 py-3">
                                 <span
-                                    class="block text-sm font-semibold dark:text-white">{{ @$item->level->name }}</span>
+                                    class="block text-sm font-semibold dark:text-white">{{ optional($item->level)->name }}</span>
                             </div>
                         </td>
 
@@ -253,7 +268,7 @@ new class extends Component {
         <!-- End Footer -->
     </x-table.create>
 
-    <livewire:canvas title="Create {{ $title }}" id="hs-create">
+    <x-canvas-card title="{{ $title }}" id="hs-create">
         <form wire:submit.prevent="store">
             <x-form.input nama="name" type="text" label="Name" />
             <x-form.input nama="email" type="email" label="Email" />
@@ -266,11 +281,11 @@ new class extends Component {
                 @endforeach
             </x-form.select>
 
-            <livewire:form.button-save type="submit" />
+            <x-button.save type="submit" />
         </form>
-    </livewire:canvas>
+    </x-canvas-card>
 
-    <x-canvas-no-bacdrop title="Filter {{ $title }}" id="hs-filter">
+    <x-canvas-no-bacdrop title="Filter" id="hs-filter">
         <form wire:submit.prevent="filter">
             <x-form.select nama="filter_level_user_id" label="Level">
                 <option value="">Select All</option>

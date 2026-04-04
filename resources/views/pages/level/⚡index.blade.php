@@ -5,8 +5,11 @@ use App\Models\LevelUser;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Attributes\On;
+use Livewire\WithPagination;
 
 new class extends Component {
+    use WithPagination;
+
     #[Url(as: 'q')]
     public $search = '';
     public $perPage = 10;
@@ -22,6 +25,12 @@ new class extends Component {
     {
         return LevelUser::query()->when($this->search, fn($q) => $q->where('name', 'like', "%{$this->search}%"))->orderBy($this->sort)->paginate($this->perPage);
     }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function viewAll()
     {
         $this->perPage=null;
@@ -34,7 +43,14 @@ new class extends Component {
 
     public function add()
     {
-        $this->reset();
+        $this->reset(['id', 'name']);
+    }
+
+    public function edit($id)
+    {
+        $item = LevelUser::findOrFail($id);
+        $this->id = $item->id;
+        $this->name = $item->name;
     }
 
     public function store()
@@ -51,13 +67,10 @@ new class extends Component {
             'text' => 'Data berhasil disimpan',
             'icon' => 'success',
         ]);
+
+        $this->add();
     }
-    public function edit($id)
-    {
-        $item = LevelUser::findOrFail($id);
-        $this->id = $item->id;
-        $this->name = $item->name;
-    }
+
 
     public function cofirmDelete($id)
     {
@@ -160,12 +173,12 @@ new class extends Component {
 </x-table.create>
 
 
-<livewire:canvas title="Create {{ $title }}" id="hs-create">
+<x-canvas-card title="Create {{ $title }}" id="hs-create">
     <form wire:submit.prevent="store">
         <x-form.input nama="name" type="text" label="Name" />
         <x-button.save type="submit" />
     </form>
-</livewire:canvas>
+</x-canvas-card>
 
 <x-canvas-no-bacdrop title="Filter {{ $title }}" />
 

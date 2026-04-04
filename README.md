@@ -25,8 +25,19 @@ npm run dev
 ```bash
 cp .env.example .env
 ```
+```bash
+php artisan key:generate
+```
 
 3. edit file .env terutama pada koneksi database
+```bash
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=nama_db
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
 4. migrate table
 ```bash
