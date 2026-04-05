@@ -97,23 +97,8 @@ new class extends Component {
         <table class="min-w-full divide-y divide-gray-200 dark:divide-neutral-700">
             <thead class="bg-gray-50 dark:bg-neutral-800">
                 <tr>
-                    <th scope="col" class="ps-6 py-3 text-start">
-                        <label for="hs-at-with-checkboxes-main" class="flex">
-                            <input type="checkbox"
-                                class="shrink-0 border-gray-300 rounded-sm text-blue-600 focus:ring-blue-500 checked:border-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
-                                id="hs-at-with-checkboxes-main">
-                            <span class="sr-only">Checkbox</span>
-                        </label>
-                    </th>
-
-                    <th scope="col" class="ps-6 lg:ps-3 xl:ps-0 pe-6 py-3 text-start">
-                        <div class="flex items-center gap-x-2">
-                            <span class="text-xs font-semibold uppercase text-gray-800 dark:text-neutral-200">
-                                Name
-                            </span>
-                        </div>
-                    </th>
-
+                    <x-table.th title="#" />
+                    <x-table.th title="Name" />
                     <th scope="col" class="px-6 py-3 text-end"></th>
                 </tr>
             </thead>
@@ -121,32 +106,12 @@ new class extends Component {
             <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
                 @foreach ($this->data as $item)
                     <tr class="odd:bg-layer even:bg-surface hover:bg-muted-hover dark:odd:bg-neutral-800 dark:even:bg-neutral-700 dark:hover:bg-neutral-600">
-                        <td class="size-px whitespace-nowrap">
-                            <div class="ps-6 py-3">
-                                <label for="hs-at-with-checkboxes-1" class="flex">
-                                    <input type="checkbox"
-                                        class="shrink-0 border-gray-300 rounded-sm text-blue-600 focus:ring-blue-500 checked:border-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
-                                        id="hs-at-with-checkboxes-1">
-                                    <span class="sr-only">Checkbox</span>
-                                </label>
-                            </div>
-                        </td>
-                        <td class="size-px whitespace-nowrap">
-                            <div class="ps-6 lg:ps-3 xl:ps-0 pe-6 py-3">
-                                <div class="flex items-center gap-x-3">
-                                    <span
-                                        class="block text-sm font-semibold dark:text-white">{{ $item->name }}</span>
-                                </div>
-                            </div>
-                        </td>
-
-                        <td class="size-px whitespace-nowrap">
-                            <div class="inline-flex rounded-lg shadow-2xs">
-                                <x-button.edit id="{{ $item->id }}" />
-                                <x-button.hapus id="{{ $item->id }}" />
-                            </div>
-                        </td>
-
+                        <x-table.td>{{ $this->data->firstItem() + $loop->index }}</x-table.td>
+                        <x-table.td>{{ $item->name }}</x-table.td>
+                        <x-table.td>
+                            <x-button.edit id="{{ $item->id }}" />
+                            <x-button.hapus id="{{ $item->id }}" />
+                        </x-table.td>
                     </tr>
                 @endforeach
             </tbody>

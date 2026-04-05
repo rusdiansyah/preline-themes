@@ -62,15 +62,17 @@ new class extends Component {
 ?>
 
 <div>
-    <x-card title="Settings">
+    <x-form-card title="Application Settings">
         <form wire:submit.prevent="save">
-            <x-form.input nama="nama_aplikasi" label="Nama Aplikasi" />
-            <x-form.input nama="nama_instansi" label="Nama Instansi" />
-            <x-form.input nama="alamat_instansi" label="Alamat Instansi" />
-            <x-form.input nama="email" label="Email" type="email" />
-            <x-form.input nama="website" label="Website" />
+            <x-form.input label="Nama Aplikasi" nama="nama_aplikasi" wire:model.defer="nama_aplikasi" />
+            <x-form.input label="Nama Instansi" nama="nama_instansi" wire:model.defer="nama_instansi" />
+            <x-form.input label="Alamat Instansi" nama="alamat_instansi" wire:model.defer="alamat_instansi" />
+            <x-form.input label="Email" nama="email" type="email" wire:model.defer="email" />
+            <x-form.input label="Website" nama="website" type="url" wire:model.defer="website" />
 
-            <x-button.save type="submit" />
+            <div class="text-end">
+                <x-button.save type="submit" />
+            </div>
         </form>
-    </x-card>
+    </x-form-card>
 </div>

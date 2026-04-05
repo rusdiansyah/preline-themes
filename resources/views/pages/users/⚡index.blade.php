@@ -170,81 +170,24 @@ new class extends Component {
         <table class="min-w-full table-auto divide-y divide-gray-200 dark:divide-neutral-700">
             <thead class="bg-gray-50 dark:bg-neutral-800">
                 <tr>
-                    <th scope="col" class="ps-6 py-3 text-start">
-                        <label for="hs-at-with-checkboxes-main" class="flex">
-                            <input type="checkbox"
-                                class="shrink-0 border-gray-300 rounded-sm text-blue-600 focus:ring-blue-500 checked:border-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
-                                id="hs-at-with-checkboxes-main">
-                            <span class="sr-only">Checkbox</span>
-                        </label>
-                    </th>
-
-                    <th scope="col" class="px-6 py-3 text-start">
-                        <div class="flex items-center gap-x-2">
-                            <span class="text-xs font-semibold uppercase text-gray-800 dark:text-neutral-200">
-                                Name
-                            </span>
-                        </div>
-                    </th>
-
-                    <th scope="col" class="px-6 py-3 text-start">
-                        <div class="flex items-center gap-x-2">
-                            <span class="text-xs font-semibold uppercase text-gray-800 dark:text-neutral-200">
-                                Email
-                            </span>
-                        </div>
-                    </th>
-
-                    <th scope="col" class="px-6 py-3 text-start">
-                        <div class="flex items-center gap-x-2">
-                            <span class="text-xs font-semibold uppercase text-gray-800 dark:text-neutral-200">
-                                Level
-                            </span>
-                        </div>
-                    </th>
-                    <th scope="col" class="px-6 py-3 text-end"></th>
+                    <x-table.th-check />
+                    <x-table.th title="Name" />
+                    <x-table.th title="Email" />
+                    <x-table.th title="Level" />
                 </tr>
             </thead>
 
             <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
                 @foreach ($this->data as $item)
                     <tr class="odd:bg-layer even:bg-surface hover:bg-muted-hover dark:odd:bg-neutral-800 dark:even:bg-neutral-700 dark:hover:bg-neutral-600">
-                        <td class="size-px whitespace-nowrap">
-                            <div class="ps-6 py-3">
-                                <label for="hs-at-with-checkboxes-1" class="flex">
-                                    <input type="checkbox"
-                                        class="shrink-0 border-gray-300 rounded-sm text-blue-600 focus:ring-blue-500 checked:border-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-600 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
-                                        id="hs-at-with-checkboxes-1">
-                                    <span class="sr-only">Checkbox</span>
-                                </label>
-                            </div>
-                        </td>
-
-                        <td class="size-px whitespace-nowrap">
-                            <div class="px-6 py-3">
-                                <span
-                                    class="block text-sm font-semibold dark:text-white">{{ $item->name }}</span>
-                            </div>
-                        </td>
-                        <td class="size-px whitespace-nowrap">
-                            <div class="px-6 py-3">
-                                <span
-                                    class="block text-sm font-semibold dark:text-white">{{ $item->email }}</span>
-                            </div>
-                        </td>
-                        <td class="size-px whitespace-nowrap">
-                            <div class="px-6 py-3">
-                                <span
-                                    class="block text-sm font-semibold dark:text-white">{{ optional($item->level)->name }}</span>
-                            </div>
-                        </td>
-
-                        <td class="size-px whitespace-nowrap">
-                            <div class="inline-flex rounded-lg shadow-2xs">
-                                <x-button.edit id="{{ $item->id }}" />
-                                <x-button.hapus id="{{ $item->id }}" />
-                            </div>
-                        </td>
+                        <x-table.td-check id="{{ $item->id }}" />
+                        <x-table.td>{{ $item->name }}</x-table.td>
+                        <x-table.td>{{ $item->email }}</x-table.td>
+                        <x-table.td>{{ optional($item->level)->name }}</x-table.td>
+                        <x-table.td>
+                            <x-button.edit id="{{ $item->id }}" />
+                            <x-button.hapus id="{{ $item->id }}" />
+                        </x-table.td>
                     </tr>
                 @endforeach
             </tbody>
